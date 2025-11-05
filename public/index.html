@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>express practise</title>
+</head>
+<body>
+    <!-- создайте форму User, данные из которой пользователь будет отправлять на сервер -->
+    <!-- форма должна включать в себя поля: ФИО (только текст), Номер телефона (только цифры), Email (только почтовый адрес), Пароль (обязательная маска) -->
+
+    <form class="form" name="myForm" style="display: flex; flex-direction: column; max-width: 500px;">
+        <label for="name">Имя</label>
+        <input type="text" class="name" name="name" required>  <br>
+
+        <label for="number">Телефон</label>
+        <input type="number" class="number" name="phone" required><br>
+
+        <label for="email">email</label>
+        <input type="email" class="email" name="email" required><br>
+
+        <label for="password">Пароль</label>
+        <input type="password" class="password" name="password" required><br>
+
+        <button type="submit">123</button>
+    </form>
+
+    <script src="client.js"></script>
+</body>
+</html>
