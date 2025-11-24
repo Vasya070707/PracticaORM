@@ -19,7 +19,7 @@ form.addEventListener('submit', async (e) => {
     };
 
     // 4. создайте запрос для отправки данных (метод POST) и отправьте данные формы на сервер
-    const response = await fetch('/regist', {
+    const response = await fetch('http://localhost:3000/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

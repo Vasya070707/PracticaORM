@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Профиль</title>
+</head>
+<body>
+  <h1>Добро пожаловать, <span id="username"></span></h1>
+  <p>Email: <span id="email"></span></p>
+  <p>Телефон: <span id="number"></span></p>
+
+  <script>
+    const renderProfile = (user) => {
+      document.getElementById('username').textContent = user.name;
+      document.getElementById('email').textContent = user.email;
+      document.getElementById('number').textContent = user.number;
+    };
+
+    const localUser = JSON.parse(localStorage.getItem('user'));
+    if (localUser) {
+      renderProfile(localUser);
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get('userId');
+
+      if (!userId) {
+        window.location.href = 'avtoriz.html';
+      } else {
+        fetch(`/profile/${userId}`)
+          .then((res) => {
+            if (!res.ok) throw new Error('Не удалось получить профиль');
+            return res.json();
+          })
+          .then((user) => {
+            localStorage.setItem('user', JSON.stringify(user));
+            renderProfile(user);
+          })
+          .catch(() => {
+            window.location.href = 'avtoriz.html';
+          });
+      }
+    }
+  </script>
+</body>
+</html>

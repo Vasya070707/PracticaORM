@@ -41,12 +41,14 @@ async function testConnection() {
     try {
         await sequelize.authenticate(); 
         console.log('Соединение установлено успешно');
+        await UserDB.sync();
+        console.log('База данных синхронизирована');
     } catch (e) {
         console.log('Ошибка:', e.message); 
     }
 }
 
-app.post('/regist', async (req, res) => {
+app.post('/submit', async (req, res) => {
     const userData = req.body;
     console.log('Получены данные: ', userData);
     
@@ -68,15 +70,73 @@ app.post('/regist', async (req, res) => {
     }
 });
 
-app.post('/login', async (req, res) =>{
-    const userData = req.body;
-
-    UserDB.findOne({ where: { name: userData.name } }),
-    UserDB.findOne({ where: { email: userData.email } }),
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
     
+    try {
+        const user = await UserDB.findOne({
+            where: { email: email }
+        });
+        
+        if (!user) {
+            return res.status(401).json({ 
+                active: false,
+                message: 'Пользователь с таким email не найден' 
+            });
+        }
+        
+        if (user.password !== password) {
+            return res.status(401).json({ 
+                active: false,
+                message: 'Неверный пароль' 
+            });
+        }
+        
+        const userData = {
+            userId: user.userId,
+            name: user.name,
+            email: user.email,
+            number: user.number
+        };
+        
+        res.json({
+            active: true,
+            userData: userData,
+            message: 'Авторизация успешна'
+        });
+        
+    } catch (error) {
+        console.log('Ошибка авторизации:', error);
+        res.status(500).json({ 
+            active: false,
+            message: 'Ошибка сервера при авторизации' 
+        });
+    }
+});
 
-    console.log('Добро пожаловать: ', userData.name);
-
-})
+app.get('/profile/:userId', async (req, res) => {
+    const { userId } = req.params;
+    
+    try {
+        const user = await UserDB.findByPk(userId);
+        
+        if (!user) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+        
+        const userData = {
+            userId: user.userId,
+            name: user.name,
+            email: user.email,
+            number: user.number
+        };
+        
+        res.json(userData);
+        
+    } catch (error) {
+        console.log('Ошибка получения профиля:', error);
+        res.status(500).json({ error: 'Ошибка сервера при получении профиля' });
+    }
+});
 
 testConnection();
