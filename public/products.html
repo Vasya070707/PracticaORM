@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товары</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input,
+        textarea,
+        button {
+            padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Управление товарами</h1>
+
+    <div class="add-product-section">
+        <h2>Добавить новый товар</h2>
+        <form id="productForm" name="productForm">
+            <label for="productName">Название товара:</label>
+            <input type="text" id="productName" name="productName" required>
+
+            <label for="productPrice">Цена:</label>
+            <input type="number" id="productPrice" name="productPrice" step="0.01" min="0" required>
+
+            <label for="productDescription">Описание:</label>
+            <textarea id="productDescription" name="productDescription"></textarea>
+
+            <button type="submit">Добавить товар</button>
+        </form>
+        <div id="formMessage"></div>
+    </div>
+
+    <div class="products-section">
+        <h2>Список товаров</h2>
+        <div id="productsTable">
+            <div class="loading">Загрузка товаров...</div>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+</body>
+</html>
+

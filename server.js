@@ -37,11 +37,33 @@ const UserDB = sequelize.define('User', {
     }
 });
 
+const Products = sequelize.define('Product', {
+    productID: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: DataTypes.UUIDV4
+    },
+    productName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    productPrice: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+    },
+    productDescription: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    }
+});
+
 async function testConnection() {
     try {
         await sequelize.authenticate(); 
         console.log('Соединение установлено успешно');
         await UserDB.sync();
+        await Products.sync();
         console.log('База данных синхронизирована');
     } catch (e) {
         console.log('Ошибка:', e.message); 
@@ -136,6 +158,40 @@ app.get('/profile/:userId', async (req, res) => {
     } catch (error) {
         console.log('Ошибка получения профиля:', error);
         res.status(500).json({ error: 'Ошибка сервера при получении профиля' });
+    }
+});
+
+app.get('/getProducts', async (req, res) => {
+    try {
+        const products = await Products.findAll();
+        res.json(products);
+    } catch (error) {
+        console.log('Ошибка получения товаров:', error);
+        res.status(500).json({ error: 'Ошибка сервера при получении товаров' });
+    }
+});
+
+app.post('/postProduct', async (req, res) => {
+    const productData = req.body;
+    console.log('Получены данные товара: ', productData);
+    
+    try {
+        const newProduct = await Products.create({
+            productName: productData.productName,
+            productPrice: productData.productPrice,
+            productDescription: productData.productDescription
+        });
+        
+        console.log('Товар сохранен в базу:', newProduct.productID);
+        
+        res.json({ 
+            message: 'Товар успешно добавлен',
+            product: newProduct
+        });
+        
+    } catch (error) {
+        console.log('Ошибка сохранения товара:', error);
+        res.status(500).json({ error: 'Не удалось сохранить товар' });
     }
 });
 
